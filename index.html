@@ -438,10 +438,16 @@
                 WHERE {
                   {
                     SELECT ?item (MIN(?pubDate) as ?minDate) WHERE {
-                      ?item wdt:P31 wd:Q11424; wdt:P577 ?pubDate.
                       
-                      ${genreFilter}  # Updated Genre Logic
+                      # --- [修正這裡] --- 
+                      # 舊: ?item wdt:P31 wd:Q11424; wdt:P577 ?pubDate.
+                      # 新: 加了 /wdt:P279* 代表「包含所有子類別 (Subclasses)」
                       
+                      ?item wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?pubDate.
+                      
+                      # ------------------
+
+                      ${genre ? `?item wdt:P136 wd:${genre}.` : ''}
                       ${country ? `?item wdt:P495 wd:${country}.` : ''}
                     }
                     GROUP BY ?item

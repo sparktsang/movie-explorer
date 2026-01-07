@@ -36,7 +36,7 @@ We don't just show you movies; we show you the *acclaimed* ones.
 ### 2. 🌍 A World of Cinema
 Hollywood is not the only star. Our database covers the globe:
 - **Countries:** From South Korea to France, India to Hong Kong.
-- **Genres:** Over 30 specific genres including *Cyberpunk*, *Folk Horror*, *Wuxia*, and *Time-travel*.
+- **Genres:** Over 30 specific genres including *Techno-thriller*, *Black Comedy*, *Martial Arts*, and *Time-travel*.
 
 ### 3. 🛡️ Privacy & Performance
 - **Zero Install:** Runs entirely in your browser.

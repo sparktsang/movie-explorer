@@ -457,7 +457,14 @@
 
                   OPTIONAL { ?item wdt:P495 ?country. }
                   OPTIONAL { ?item wdt:P364 ?lang. }
-                  OPTIONAL { ?item wdt:P136 ?genre. }
+                  OPTIONAL { 
+                    { ?item wdt:P136 ?genre. }
+                    UNION
+                    { 
+                        ?item wdt:P31 ?genre. 
+                        FILTER(?genre = wd:Q202866)
+                    } 
+                  }
                   OPTIONAL { ?item wdt:P2047 ?duration. }
                   OPTIONAL { ?item wdt:P1258 ?rtId. } 
 

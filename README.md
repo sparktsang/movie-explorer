@@ -8,7 +8,7 @@ But when it comes to *finding* great cinema, the search algorithms often leave t
 
 It is a zero-tracking, ad-free, open-source tool that bypasses the algorithms and taps directly into the collective knowledge of humanity: **Wikidata**.
 
-👉 **[Launch the Explorer](https://sparktsang.github.io/movie-explorer/)** *(Replace with your actual URL)*
+👉 **[Launch the Explorer](https://sparktsang.github.io/movie-explorer/)**
 
 ---
 

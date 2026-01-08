@@ -187,39 +187,33 @@
             letter-spacing: 1px;
         }
 
-        /* Table Results */
         .table-container {
-            overflow-x: auto;
+            overflow-x: auto; /* 允許橫向捲動 */
+            -webkit-overflow-scrolling: touch; /* 手機平滑捲動 */
             border-radius: 12px;
             border: 1px solid var(--border-color);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%; /* 佔滿父容器 */
         }
-
+        
         table {
             width: 100%;
+            min-width: 1000px; /* <--- 關鍵！強制表格最少要有這麼寬，就不會變形 */
             border-collapse: collapse;
             background: var(--surface-dark);
             font-size: 0.95rem;
-            table-layout: fixed;
+            /* 移除 table-layout: fixed; 讓內容自然撐開 */
         }
 
-        th {
-            background: #222;
-            color: var(--text-muted);
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* [UPDATED] Cells */
+        th, td {
             padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        td {
-            padding: 15px 20px;
             border-bottom: 1px solid #2a2a2a;
             vertical-align: middle;
             color: #ddd;
-            word-wrap: break-word;
+            /* 移除 word-wrap: break-word; */
+            white-space: normal; /* 允許自然換行，但不強制切斷單字 */
         }
 
         tr:last-child td { border-bottom: none; }

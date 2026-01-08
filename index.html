@@ -355,8 +355,14 @@
                 <button onclick="downloadExcel()" class="btn-download" id="download-btn">Export .XLSX</button>
             </div>
         </div>
-
+        
         <div id="status"></div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a id="debug-link" href="#" target="_blank" style="color: #666; font-size: 0.8rem; text-decoration: none; border-bottom: 1px dashed #666; display: none;">
+                🐛 View Raw Query on Wikidata
+            </a>
+        </div>
 
         <div class="table-container">
             <table id="results-table">
@@ -400,14 +406,18 @@
 
             // --- SPARQL GENERATION ---
             
-            // 1. Handle Multi-ID Genres (e.g. Body Horror)
+            // 1. Handle Genre Logic (Fixing the Animation Ontology Issue)
             let genreFilter = "";
             if (genre) {
-                if (genre.includes(',')) {
-                    // Split "Q1,Q2" into "wd:Q1, wd:Q2"
+                if (genre === "Q202866") {
+                    // Animation Special Case: Check P136 (Genre) OR P31 (Instance Of)
+                    genreFilter = `{ ?item wdt:P136 wd:Q202866. } UNION { ?item wdt:P31/wdt:P279* wd:Q202866. }`;
+                } else if (genre.includes(',')) {
+                    // Multi-ID case
                     const ids = genre.split(',').map(id => `wd:${id}`).join(', ');
                     genreFilter = `?item wdt:P136 ?g. FILTER(?g IN (${ids}))`;
                 } else {
+                    // Standard case
                     genreFilter = `?item wdt:P136 wd:${genre}.`;
                 }
             }
@@ -439,15 +449,17 @@
                   {
                     SELECT ?item (MIN(?pubDate) as ?minDate) WHERE {
                       
-                      # --- [修正這裡] --- 
-                      # 舊: ?item wdt:P31 wd:Q11424; wdt:P577 ?pubDate.
-                      # 新: 加了 /wdt:P279* 代表「包含所有子類別 (Subclasses)」
-                      
+                      # 這一行保持不變 (包含 Subclass 修正)
                       ?item wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?pubDate.
                       
+                      # --- [修正這裡] ---
+                      # 舊: ${genre ? `?item wdt:P136 wd:${genre}.` : ''}
+                      # 新: 使用上面定義好的 genreFilter 變數
+                      
+                      ${genreFilter}
+                      
                       # ------------------
-
-                      ${genre ? `?item wdt:P136 wd:${genre}.` : ''}
+                      
                       ${country ? `?item wdt:P495 wd:${country}.` : ''}
                     }
                     GROUP BY ?item
@@ -487,6 +499,16 @@
                 ORDER BY DESC(?minDate)
                 LIMIT 1000
             `;
+            
+            // ... (sparql variable definition above)
+
+            // --- DEBUG FEATURE ---
+            const debugLink = document.getElementById('debug-link');
+            const encodedQuery = encodeURIComponent(sparql);
+            debugLink.href = `https://query.wikidata.org/#${encodedQuery}`;
+            debugLink.style.display = 'inline-block';
+            
+            // ... (try { fetch... } below)
 
             try {
                 const url = `${ENDPOINT}?query=${encodeURIComponent(sparql)}&format=json`;

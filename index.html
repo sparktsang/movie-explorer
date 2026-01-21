@@ -569,7 +569,31 @@
                 if (seenIds.has(id)) return;
                 seenIds.add(id);
 
-                const title = row.title ? row.title.value : "Unknown";
+                // --- [UPDATED] Smart Title Logic ---
+                // 1. Get raw label from Wikidata (might be Q-ID)
+                let rawTitle = row.title ? row.title.value : "Unknown";
+                
+                // 2. Check if it looks like a Q-ID (e.g. Q125971387)
+                //    Regex explanation: Starts with Q, followed by numbers only
+                const isQID = /^Q\d+$/.test(rawTitle);
+                
+                // 3. If it is a Q-ID AND we have a Wikipedia link, extract the real title from URL
+                if (isQID && row.article) {
+                    const wikiUrl = row.article.value; // e.g. https://en.wikipedia.org/wiki/Bugonia_(film)
+                    const slug = wikiUrl.split('/').pop(); // Get "Bugonia_(film)"
+                    
+                    // Decode URL (remove %20 etc) and replace underscores with spaces
+                    let cleanSlug = decodeURIComponent(slug).replace(/_/g, ' '); // "Bugonia (film)"
+                    
+                    // Remove trailing parentheses like (film) or (2025 film)
+                    // Regex looks for space + ( + anything + film + ) at the end
+                    cleanSlug = cleanSlug.replace(/\s\([^)]*film\)$/i, ''); // "Bugonia"
+
+                    rawTitle = cleanSlug;
+                }
+                
+                const title = rawTitle;
+                // -----------------------------------
                 const date = row.minDate ? row.minDate.value.substring(0, 4) : "-";
                 
                 let country = row.countries ? row.countries.value : "-";

@@ -550,7 +550,7 @@
 
             } catch (error) {
                 console.error(error);
-                status.innerText = "Error: " + error.message;
+                status.innerText = error.message + ". Please narrow down your search.";
             } finally {
                 btnSearch.disabled = false;
             }
